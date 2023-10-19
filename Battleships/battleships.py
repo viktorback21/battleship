@@ -31,11 +31,10 @@ def create_ship(lists, number):
 
 
 ship_list = []
-
 nr = 0
 
 
-#https://pypi.org/project/pynput/
+# https://pypi.org/project/pynput/
 def on_press(key):
     global nr
     global ship_list
@@ -51,22 +50,22 @@ def on_press(key):
         x1 -= 1
     elif key == keyboard.Key.right and x1 != 9:
         x1 += 1
+    elif key == keyboard.Key.enter and player_board[y1][x1] != 'x':
+        nr = create_ship(ship_list, nr)
+        print(nr)
     print("\n" * 3)
-    print(y1, x1)
     player_board[y1][x1] = 'x'
+    if key != keyboard.Key.enter:
+        player_board[y][x] = 0
     y = y1
     x = x1
     print_board()
-    if key == keyboard.Key.enter:
-        nr = create_ship(ship_list, nr)
-        print(nr)
-    else:
-        player_board[y1][x1] = 0
 
 
 def print_board():
     for l in player_board:
         print(*l, sep="  ")
+
 
 def init_player_board():
     pass
@@ -87,29 +86,22 @@ def computer_make_move():
 def is_win():
     pass
 
+
 def valid_moves(board):
-    valid_moves = []
+    valid_moves1 = []
     for y, list in enumerate(board):
         for x, spot in enumerate(list):
             if str(spot) == '0':
-                valid_moves.append((x, y))
-    return valid_moves
-
-def start():
-    listener.start()
-    ship_list = []
-    create_list()
-    create_ship(ship_list, 0)
-
-
-
-listener = keyboard.Listener(on_press=on_press)
+                valid_moves1.append((x, y))
+    return valid_moves1
 
 
 def start():
-    create_list()
     listener.start()
+    create_list()
+    on_press(keyboard.Key.alt)
     listener.join()
 
 
+listener = keyboard.Listener(on_press=on_press)
 start()
