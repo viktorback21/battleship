@@ -16,7 +16,7 @@ def create_list():
         board.append([0] * 10)
     return board
 
-#dsihodsiodsihodsihodsiho
+
 def create_ship(lists, number):
     if number < 5:
         ship = Ship()
