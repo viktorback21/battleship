@@ -23,10 +23,11 @@ def create_ship(lists, number):
         ship.cords = (x, y)
         lists.append(ship)
         number += 1
-        print(ship.cords)
+        if number == 5:
+            for s in ship_list:
+                print(s.cords)
+            listener.stop()
         return number
-    else:
-        listener.stop()
 
 
 ship_list = []
