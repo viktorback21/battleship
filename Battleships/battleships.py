@@ -43,12 +43,13 @@ def on_press(key):
         x1 += 1
     elif key == keyboard.Key.enter:
         listener.stop()
+    print("\n" * 3)
     print(y1, x1)
     board[y1][x1] = 1
     y = y1
     x = x1
     print_board()
-    board[y1][x1]=0
+    board[y1][x1] = 0
 
 
 def print_board():
