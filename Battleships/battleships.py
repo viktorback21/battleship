@@ -1,14 +1,13 @@
 from pynput import keyboard
 
 board = []
-
 x = 0
 y = 0
-
 
 def create_list():
     for i in range(9):
         board.append([0] * 10)
+    return board
 
 
 class Ship:
@@ -33,9 +32,7 @@ def on_press(key):
     x1 = x
     if key == keyboard.Key.up:
         y1 -= 1
-        print("HDSUHUDSIDSiu")
     elif key == keyboard.Key.down:
-        print("dspÅEAKPÅDSÅJOPhdshoPDS")
         y1 += 1
     elif key == keyboard.Key.left:
         x1 -= 1
@@ -52,8 +49,11 @@ def on_press(key):
 
 
 def print_board():
+    print("   a  b  c  d  e  f  g  h  i  j ")
+    i = 1
     for l in board:
-        print(l)
+        print(str(i) + " " + str(l))
+        i += 1
 
 
 def init_player_board():
@@ -80,6 +80,6 @@ def start():
     create_list()
     create_ship()
 
-
 listener = keyboard.Listener(on_press=on_press)
 start()
+
