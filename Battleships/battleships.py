@@ -1,19 +1,32 @@
 from pynput import keyboard
 
 board = []
-for i in range(9):
-    board.append([0] * 10)
+
+x = 0
+y = 0
+
+
+def create_list():
+    for i in range(9):
+        board.append([0] * 10)
 
 
 class Ship:
-    def __int__(self, cords, destroyed):
+    def __int__(self, cords):
         self.cords = cords
         self.destroyed = False
-        pass
 
-#cghfhyfyfyufyufyu
 
-#https://pypi.org/project/pynput/
+def create_ship():
+    listener.start()
+    listener.join()
+    ship = Ship()
+    ship.cords = x
+    print(ship.cords)
+    print(x)
+
+
+# https://pypi.org/project/pynput/
 def on_press(key):
     if key == keyboard.Key.up:
         print("HDSUHUDSIDSiu")
@@ -46,6 +59,10 @@ def is_win():
     pass
 
 
+def start():
+    create_list()
+    create_ship()
+
+
 listener = keyboard.Listener(on_press=on_press)
-listener.start()
-listener.join()
+start()
