@@ -1,5 +1,4 @@
 from pynput import keyboard
-import os
 
 board = []
 x = 0
@@ -13,45 +12,55 @@ class Ship:
 
 
 def create_list():
-    for i in range(9):
+    for i in range(10):
         board.append([0] * 10)
     return board
 
 
-def create_ship(lists, nr):
-    if nr < 5:
-        listener.join()
+def create_ship(lists, number):
+    if number < 5:
         ship = Ship()
         ship.cords = (x, y)
         lists.append(ship)
-        nr += 1
-        create_ship(lists, nr)
+        number += 1
         print(ship.cords)
+        return number
+    else:
+        listener.stop()
+
+
+ship_list = []
+
+nr = 0
 
 
 # https://pypi.org/project/pynput/
 def on_press(key):
+    global nr
+    global ship_list
     global y
     global x
     y1 = y
     x1 = x
     if key == keyboard.Key.up and y1 != 0:
         y1 -= 1
-    elif key == keyboard.Key.down and y1 != 8:
+    elif key == keyboard.Key.down and y1 != 9:
         y1 += 1
     elif key == keyboard.Key.left and x1 != 0:
         x1 -= 1
-    elif key == keyboard.Key.right and x1 != 8:
+    elif key == keyboard.Key.right and x1 != 9:
         x1 += 1
-    elif key == keyboard.Key.enter:
-        listener.stop()
     print("\n" * 3)
     print(y1, x1)
     board[y1][x1] = 'x'
     y = y1
     x = x1
     print_board()
-    board[y1][x1] = 0
+    if key == keyboard.Key.enter:
+        nr = create_ship(ship_list, nr)
+        print(nr)
+    else:
+        board[y1][x1] = 0
 
 
 def print_board():
@@ -79,12 +88,13 @@ def is_win():
     pass
 
 
-def start():
-    listener.start()
-    ship_list = []
-    create_list()
-    create_ship(ship_list, 0)
-
-
 listener = keyboard.Listener(on_press=on_press)
+
+
+def start():
+    create_list()
+    listener.start()
+    listener.join()
+
+
 start()
