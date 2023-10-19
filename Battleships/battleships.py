@@ -11,7 +11,7 @@ class Ship:
         self.destroyed = False
         pass
 
-
+#cghfhyfyfyufyufyu
 
 #https://pypi.org/project/pynput/
 def on_press(key):
