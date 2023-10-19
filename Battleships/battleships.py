@@ -1,7 +1,7 @@
 from pynput import keyboard
 import os
 
-board = []
+player_board = []
 x = 0
 y = 0
 
@@ -14,7 +14,7 @@ class Ship:
 
 def create_list():
     for i in range(10):
-        board.append([0] * 10)
+        player_board.append([0] * 10)
 
 
 def create_ship(lists, nr):
@@ -46,17 +46,18 @@ def on_press(key):
         listener.stop()
     print("\n" * 3)
     print(y1, x1)
-    board[y1][x1] = 'x'
+    player_board[y1][x1] = 'x'
     y = y1
     x = x1
     print_board()
-    board[y1][x1] = 0
+    player_board[y1][x1] = 0
+
+
 
 
 def print_board():
-    for l in board:
+    for l in player_board:
         print(*l, sep="  ")
-
 
 def init_player_board():
     pass
@@ -77,12 +78,21 @@ def computer_make_move():
 def is_win():
     pass
 
+def valid_moves(board):
+    valid_moves = []
+    for y, list in enumerate(board):
+        for x, spot in enumerate(list):
+            if str(spot) == '0':
+                valid_moves.append((x, y))
+    return valid_moves
+
 
 def start():
     listener.start()
     ship_list = []
     create_list()
     create_ship(ship_list, 0)
+
 
 
 listener = keyboard.Listener(on_press=on_press)
