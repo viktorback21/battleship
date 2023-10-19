@@ -35,7 +35,7 @@ ship_list = []
 nr = 0
 
 
-# https://pypi.org/project/pynput/
+#https://pypi.org/project/pynput/
 def on_press(key):
     global nr
     global ship_list
