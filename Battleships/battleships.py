@@ -15,7 +15,6 @@ class Ship:
 def create_list():
     for i in range(10):
         board.append([0] * 10)
-    return board
 
 
 def create_ship(lists, nr):
