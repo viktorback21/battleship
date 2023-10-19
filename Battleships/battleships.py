@@ -13,7 +13,7 @@ class Ship:
 
 
 def create_list():
-    for i in range(9):
+    for i in range(10):
         board.append([0] * 10)
     return board
 
@@ -37,11 +37,11 @@ def on_press(key):
     x1 = x
     if key == keyboard.Key.up and y1 != 0:
         y1 -= 1
-    elif key == keyboard.Key.down and y1 != 8:
+    elif key == keyboard.Key.down and y1 != 9:
         y1 += 1
     elif key == keyboard.Key.left and x1 != 0:
         x1 -= 1
-    elif key == keyboard.Key.right and x1 != 8:
+    elif key == keyboard.Key.right and x1 != 9:
         x1 += 1
     elif key == keyboard.Key.enter:
         listener.stop()
