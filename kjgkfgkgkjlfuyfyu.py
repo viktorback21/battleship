@@ -10,7 +10,7 @@ class Ship:
         self.cords = cords
         self.destroyed = False
 
-#test
+#testbiuggiugiugiu
 
 #https://pypi.org/project/pynput/
 def on_press(key):
