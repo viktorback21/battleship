@@ -11,18 +11,22 @@ class Ship:
         self.cords = cords
         self.destroyed = False
 
+
 def create_list():
     for i in range(9):
         board.append([0] * 10)
     return board
 
 
-def create_ship():
-    listener.start()
-    listener.join()
-    ship = Ship()
-    ship.cords = (x, y)
-    print(ship.cords)
+def create_ship(lists, nr):
+    if nr < 5:
+        listener.join()
+        ship = Ship()
+        ship.cords = (x, y)
+        lists.append(ship)
+        nr += 1
+        create_ship(lists, nr)
+        print(ship.cords)
 
 
 # https://pypi.org/project/pynput/
@@ -31,13 +35,13 @@ def on_press(key):
     global x
     y1 = y
     x1 = x
-    if key == keyboard.Key.up:
+    if key == keyboard.Key.up and y1 != 0:
         y1 -= 1
-    elif key == keyboard.Key.down:
+    elif key == keyboard.Key.down and y1 != 8:
         y1 += 1
-    elif key == keyboard.Key.left:
+    elif key == keyboard.Key.left and x1 != 0:
         x1 -= 1
-    elif key == keyboard.Key.right:
+    elif key == keyboard.Key.right and x1 != 8:
         x1 += 1
     elif key == keyboard.Key.enter:
         listener.stop()
@@ -52,7 +56,7 @@ def on_press(key):
 
 def print_board():
     for l in board:
-        print(*l, sep = "  ")
+        print(*l, sep="  ")
 
 
 def init_player_board():
@@ -76,9 +80,11 @@ def is_win():
 
 
 def start():
+    listener.start()
+    ship_list = []
     create_list()
-    create_ship()
+    create_ship(ship_list, 0)
+
 
 listener = keyboard.Listener(on_press=on_press)
 start()
-
