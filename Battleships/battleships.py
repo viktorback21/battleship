@@ -9,6 +9,7 @@ class Ship:
     def __int__(self, cords, destroyed):
         self.cords = cords
         self.destroyed = False
+        pass
 
 
 
