@@ -1,19 +1,20 @@
 from pynput import keyboard
+import os
 
 board = []
 x = 0
 y = 0
-
-def create_list():
-    for i in range(9):
-        board.append([0] * 10)
-    return board
 
 
 class Ship:
     def __int__(self, cords):
         self.cords = cords
         self.destroyed = False
+
+def create_list():
+    for i in range(9):
+        board.append([0] * 10)
+    return board
 
 
 def create_ship():
@@ -41,7 +42,7 @@ def on_press(key):
     elif key == keyboard.Key.enter:
         listener.stop()
     print(y1, x1)
-    board[y1][x1] = 1
+    board[y1][x1] = 'x'
     y = y1
     x = x1
     print_board()
@@ -49,11 +50,8 @@ def on_press(key):
 
 
 def print_board():
-    print("   a  b  c  d  e  f  g  h  i  j ")
-    i = 1
     for l in board:
-        print(str(i) + " " + str(l))
-        i += 1
+        print(*l, sep = "  ")
 
 
 def init_player_board():
