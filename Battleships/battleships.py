@@ -4,7 +4,8 @@ player_board = []
 computer_board = []
 x = 0
 y = 0
-
+ship_list = []
+nr = 0
 
 class Ship:
     def __int__(self, cords):
@@ -30,10 +31,6 @@ def create_ship(lists, number):
             listener.stop()
         return number
 
-
-ship_list = []
-
-nr = 0
 
 
 #https://pypi.org/project/pynput/
@@ -80,9 +77,13 @@ def init_computer_board():
         computer_board.append(['*'] * 10)
 
 
-def make_move(x, y):
-    pass
-
+def make_move(x, y, board):
+    if (x, y) in valid_moves(board):
+        if board[y][x] == '0':
+            board[y][x] = 'E'
+        elif board[y][x] == 'x':
+            board[y][x] = '#'
+    return board
 
 def computer_make_move():
     pass
