@@ -7,10 +7,19 @@ y = 0
 ship_list = []
 nr = 0
 
+
 class Ship:
     def __int__(self, cords):
         self.cords = cords
         self.destroyed = False
+
+
+def check_list(x_ship, y_ship, ships):
+    for ship in ships:
+        if ship.cords == (x_ship, y_ship):
+            print("NON VALID MOVE")
+            return False
+    return True
 
 
 def create_list():
@@ -21,10 +30,11 @@ def create_list():
 
 def create_ship(lists, number):
     if number < 5:
-        ship = Ship()
-        ship.cords = (x, y)
-        lists.append(ship)
-        number += 1
+        if check_list(x, y, lists):
+            ship = Ship()
+            ship.cords = (x, y)
+            lists.append(ship)
+            number += 1
         if number == 5:
             for s in ship_list:
                 print(s.cords)
@@ -32,8 +42,7 @@ def create_ship(lists, number):
         return number
 
 
-
-#https://pypi.org/project/pynput/
+# https://pypi.org/project/pynput/
 def on_press(key):
     global nr
     global ship_list
@@ -68,6 +77,7 @@ def print_board():
         print(*player_board[i], sep="  ", end='                                    ')
         print(*computer_board[i], sep="  ")
 
+
 def init_player_board():
     pass
 
@@ -85,12 +95,14 @@ def make_move(x, y, board):
             board[y][x] = '#'
     return board
 
+
 def computer_make_move():
     pass
 
 
 def is_win():
     pass
+
 
 def valid_moves(board):
     valid_moves1 = []
@@ -101,21 +113,16 @@ def valid_moves(board):
     return valid_moves1
 
 
-def start():
-    listener.start()
-    create_list()
-    on_press(keyboard.Key.alt)
-    listener.join()
-
-
 listener = keyboard.Listener(on_press=on_press)
 
 
 def start():
     create_list()
     init_computer_board()
+    on_press(keyboard.Key.alt)
     listener.start()
     listener.join()
 
 
-start()
+if __name__ == '__main__':
+    start()
