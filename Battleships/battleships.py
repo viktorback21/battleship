@@ -1,10 +1,13 @@
+import random
 from pynput import keyboard
+import os
 
 player_board = []
 computer_board = []
 x = 0
 y = 0
 ship_list = []
+ship_list_comp = []
 nr = 0
 
 
@@ -12,23 +15,43 @@ class Ship:
     def __int__(self, cords):
         self.cords = cords
         self.destroyed = False
-
+    def destroy_cord(self, cord): # Tar bort kordinaterna som är förstörda och kollar om hela skeppet är förstört
+        if cord not in self.cords:
+            print("ERROR: Ship not present on these coordinates.")
+            return
+        self.cords.remove(cord)
+        if len(cord) == 0:
+            self.destroyed = True
 
 def check_list(x_ship, y_ship, ships):
     for ship in ships:
         if ship.cords == (x_ship, y_ship):
-            print("NON VALID MOVE")
+            print("INVALID MOVE")
             return False
     return True
 
 
-def create_list():
+def create_computer_board():
+    for i in range(10):
+        computer_board.append(['*'] * 10)
+    valid_moves = get_empty_squares(computer_board, ship_list_comp)
+    for i in range(1,6):
+        cords = random.choice(valid_moves)
+        valid_moves.remove(cords)
+        x = cords[0]
+        y = cords[1]
+        create_ship(ship_list_comp, i, x, y)
+        print(cords)
+    print_board()
+
+
+def create_player_board():
     for i in range(10):
         player_board.append([0] * 10)
     return player_board
 
 
-def create_ship(lists, number):
+def create_ship(lists, number, x, y):
     if number < 5:
         if check_list(x, y, lists):
             ship = Ship()
@@ -48,6 +71,7 @@ def on_press(key):
     global ship_list
     global y
     global x
+    os.system('clear' if os.name == 'posix' else 'cls')
     y1 = y
     x1 = x
     if key == keyboard.Key.up and y1 != 0:
@@ -58,14 +82,13 @@ def on_press(key):
         x1 -= 1
     elif key == keyboard.Key.right and x1 != 9:
         x1 += 1
-    print("\n" * 3)
     print(y1, x1)
     player_board[y1][x1] = 'x'
     y = y1
     x = x1
     print_board()
     if key == keyboard.Key.enter:
-        nr = create_ship(ship_list, nr)
+        nr = create_ship(ship_list, nr, x, y)
         print(nr)
     else:
         player_board[y1][x1] = 0
@@ -78,23 +101,14 @@ def print_board():
         print(*computer_board[i], sep="  ")
 
 
-def init_player_board():
-    pass
-
-
-def init_computer_board():
-    for i in range(10):
-        computer_board.append(['*'] * 10)
-
-
-def make_move(x, y, board):
-    if (x, y) in valid_moves(board):
-        if board[y][x] == '0':
-            board[y][x] = 'E'
-        elif board[y][x] == 'x':
-            board[y][x] = '#'
-    return board
-
+def make_move(x, y, board, ship_list):
+    cords = (x, y)
+    if cords in get_valid_moves(board, ship_list):
+        for ship in ship_list:
+            if cords == ship.cords:
+                ship.destroy_cord(cords)
+    for ship in ship_list:
+        print(ship.cords)
 
 def computer_make_move():
     pass
@@ -103,22 +117,27 @@ def computer_make_move():
 def is_win():
     pass
 
+def get_valid_moves(board, ship_list):
+    valid_moves = get_empty_squares(board, ship_list)
+    for ship in ship_list:
+        valid_moves.append(ship.cords)
+    return valid_moves
 
-def valid_moves(board):
-    valid_moves1 = []
+def get_empty_squares(board, ship_list):
+    empty_squares = []
     for y, list in enumerate(board):
         for x, spot in enumerate(list):
-            if str(spot) == '0':
-                valid_moves1.append((x, y))
-    return valid_moves1
+            if (x, y) not in ship_list:
+                empty_squares.append((x, y))
+    return empty_squares
 
 
 listener = keyboard.Listener(on_press=on_press)
 
 
 def start():
-    create_list()
-    init_computer_board()
+    create_player_board()
+    create_computer_board()
     on_press(keyboard.Key.alt)
     listener.start()
     listener.join()
