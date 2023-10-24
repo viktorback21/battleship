@@ -15,13 +15,8 @@ class Ship:
     def __int__(self, cords):
         self.cords = cords
         self.destroyed = False
-    def destroy_cord(self, cord): # Tar bort kordinaterna som är förstörda och kollar om hela skeppet är förstört
-        if cord not in self.cords:
-            print("ERROR: Ship not present on these coordinates.")
-            return
-        self.cords.remove(cord)
-        if len(cord) == 0:
-            self.destroyed = True
+    def destroy_cords(self, cords): # Tar bort kordinaterna som är förstörda och kollar om hela skeppet är förstört
+        self.cords = ()
 
 def check_list(x_ship, y_ship, ships):
     for ship in ships:
@@ -35,7 +30,7 @@ def create_computer_board():
     for i in range(10):
         computer_board.append(['*'] * 10)
     valid_moves = get_empty_squares(computer_board, ship_list_comp)
-    for i in range(1,6):
+    for i in range(5):
         cords = random.choice(valid_moves)
         valid_moves.remove(cords)
         x = cords[0]
@@ -106,12 +101,14 @@ def make_move(x, y, board, ship_list):
     if cords in get_valid_moves(board, ship_list):
         for ship in ship_list:
             if cords == ship.cords:
-                ship.destroy_cord(cords)
-    for ship in ship_list:
+                ship.destroy_cords(cords)
+        print()
+    for ship in ship_list_comp:
         print(ship.cords)
 
-def computer_make_move():
-    pass
+def rand_computer_move():
+    cords = random.choice(get_valid_moves(player_board, ship_list))
+    make_move(cords[0], cords[1], player_board, ship_list)
 
 
 def is_win():
@@ -141,7 +138,6 @@ def start():
     on_press(keyboard.Key.alt)
     listener.start()
     listener.join()
-
 
 if __name__ == '__main__':
     start()
