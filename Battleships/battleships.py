@@ -48,27 +48,23 @@ def on_press(key):
     global ship_list
     global y
     global x
-    y1 = y
-    x1 = x
-    if key == keyboard.Key.up and y1 != 0:
-        y1 -= 1
-    elif key == keyboard.Key.down and y1 != 9:
-        y1 += 1
-    elif key == keyboard.Key.left and x1 != 0:
-        x1 -= 1
-    elif key == keyboard.Key.right and x1 != 9:
-        x1 += 1
+    if key == keyboard.Key.up and y != 0:
+        y -= 1
+    elif key == keyboard.Key.down and y != 9:
+        y += 1
+    elif key == keyboard.Key.left and x != 0:
+        x -= 1
+    elif key == keyboard.Key.right and x != 9:
+        x += 1
     print("\n" * 3)
-    print(y1, x1)
-    player_board[y1][x1] = 'x'
-    y = y1
-    x = x1
+    print(y, x)
+    player_board[y][x] = 'x'
     print_board()
     if key == keyboard.Key.enter:
         nr = create_ship(ship_list, nr)
         print(nr)
     else:
-        player_board[y1][x1] = 0
+        player_board[y][x] = 0
 
 
 def print_board():
