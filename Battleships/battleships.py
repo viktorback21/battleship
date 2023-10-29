@@ -11,13 +11,15 @@ y = 0
 ship_list = []
 ship_list_comp = []
 nr = 0
-max_cords = 10
+max_cords = \
+    8
 max_ships = 5
 
 
 class Ship:
     def __init__(self):
         self.destroyed = False
+        self.destroyed_cords = []
 
     def check_cords(self, cord):
         for t in cord:
@@ -33,12 +35,15 @@ class Ship:
         return True
 
     def destroy_cords(self, cords, board):
-        x = cords[0]
-        y = cords[1]
+        x = cords[1]
+        y = cords[0]
         board[y][x] = "!"
         self.cords.remove(cords)
         if len(self.cords) == 0:
             self.destroyed = True
+        self.destroyed_cords.append(cords)
+
+
 
 
 def check_list(chosen, ships):
@@ -63,23 +68,16 @@ def create_computer_board():
             max_x = max_cords - length
         else:
             max_y = max_cords - length
-        print(rot)
         cords = (random.randint(0, max_y-1), random.randint(0, max_x-1))
-        print(cords)
         i = create_ship(ship_list_comp, i, calc_ship(cords[1], cords[0], length, rot))
-        print(calc_ship(cords[1], cords[0], length, 0))
-        print(ship_list_comp[i-1].cords)
         max_x = max_cords
         max_y = max_cords
-    place_ships(computer_board, ship_list_comp)
+
 
 
 def place_ships(board, ships):
     for ship in ships:
         for cord in ship.cords:
-            print("DSIOIHODSIHOSd")
-            print(cord[0])
-            print(cord[1])
             board[cord[0]][cord[1]] = 'x'
 def create_player_board():
     for i in range(max_cords):
@@ -100,8 +98,7 @@ def create_ship(lists, number, cords):
 
         if number == max_ships:
             length = 5
-            for s in ship_list:
-                print(s.cords)
+
             listener.stop()
         return number
 
@@ -124,8 +121,6 @@ def print_ship(cords, print_or_remove, test):
                 if not s.check_one_cord(ye):
                     player_board[ye[0]][ye[1]] = 'x'
                     break
-
-
 rotation = 1
 length = 5
 
@@ -136,6 +131,7 @@ def can_rotate(y_cord, x_cord, ship_length, ship_rotation):
             print("CAN'T ROTATE")
             return False
     else:
+
         if y_cord + ship_length > max_cords:
             print("CAN'T ROTATE")
             return False
@@ -201,7 +197,7 @@ def on_press_the_sequel(key):
     x = x1
     print_board()
     if key == keyboard.Key.enter:
-        if True:
+        if ((y, x) in get_valid_moves(computer_board, ship_list_comp)):
             make_move(x, y, computer_board, ship_list_comp)
             print_board()
             listener_2.stop()
@@ -220,18 +216,20 @@ def print_board():
 
 
 def make_move(x, y, board, ship_list):
-    cords = (x, y)
+    cords = (y, x)
     if cords in get_valid_moves(board, ship_list):
         board[y][x] = '#'
         for ship in ship_list:
             if cords in ship.cords:
-                ship.destroy_cords(cords, board)
+                ship.destroy_cords(
+                    cords, board)
                 break
+
 
 
 def rand_computer_move():
     cords = random.choice(get_valid_moves(player_board, ship_list))
-    make_move(cords[0], cords[1], player_board, ship_list)
+    make_move(cords[1], cords[0], player_board, ship_list)
     os.system('clear' if os.name == 'posix' else 'cls')
     print_board()
 
@@ -314,16 +312,19 @@ def is_computer_win():
 def get_valid_moves(board, ship_list):
     valid_moves = get_empty_squares(board, ship_list)
     for ship in ship_list:
-        valid_moves.append(ship.cords)
+        for cord in ship.cords:
+            valid_moves.append(cord)
     return valid_moves
 
 
 def get_empty_squares(board, ship_list):
     empty_squares = []
     for y, list in enumerate(board):
-        for x, spot in enumerate(list):
-            if (x, y) not in ship_list:
-                empty_squares.append((x, y))
+        for x, spot in enumerate(board):
+            empty_squares.append((y, x))
+            for ship in ship_list:
+                if (y, x) in ship.cords or (y, x) in ship.destroyed_cords:
+                    empty_squares.remove((y, x))
     return empty_squares
 
 
@@ -339,14 +340,14 @@ def start():
     listener.join()
     while not is_computer_win() and not is_player_win():
         global listener_2
+
         listener_2 = keyboard.Listener(on_press=on_press_the_sequel)
         listener_2.start()
         listener_2.join()
         if is_computer_win() or is_player_win():
             break
         rand_computer_move()
-        for ship in ship_list_comp:
-            print(ship.cords)
+
 
 
 if __name__ == '__main__':
