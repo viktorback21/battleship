@@ -15,10 +15,8 @@ nr = 0
 
 class Ship:
     def __int__(self, cords):
-        print("SDPJDOSPJODSJPODSJPO")
         self.cords = cords
         self.destroyed = False
-
     def check_cords(self, cord):
         for t in cord:
             for c in self.cords:
@@ -32,8 +30,11 @@ class Ship:
                 return False
         return True
 
-    def destroy_cords(self, cords):  # Tar bort kordinaterna som är förstörda och kollar om hela skeppet är förstört
-        self.cords = ()
+    def destroy_cords(self, cords, board):
+        x = cords[0]
+        y = cords[1]
+        board[y][x] = "!"
+        self.cords.remove(cords)
 
 
 def check_list(chosen, ships):
@@ -51,19 +52,15 @@ def create_computer_board():
     valid_moves = get_empty_squares(computer_board, ship_list_comp)
     for i in range(5):
         cords = random.choice(valid_moves)
+        computer_board[cords[1]][cords[0]] = "x"
         valid_moves.remove(cords)
-        x = cords[0]
-        y = cords[1]
-        # create_ship(ship_list_comp, i, x, y)
+        create_ship(ship_list_comp, i, cords)
         print(cords)
-    print_board()
 
 
 def create_player_board():
     for i in range(10):
         player_board.append([0] * 10)
-    return player_board
-
 
 def create_ship(lists, number, cords, max_ships=5):
     global length
@@ -88,9 +85,9 @@ def create_ship(lists, number, cords, max_ships=5):
 def calc_ship(y_cord, x_cord, length, rotation):
     test = []
     for yeyeye in range(length):
-        cord_y = (yeyeye * (int(math.sin((math.pi / 2) * rotation))))
-        cord_x = (yeyeye * (int(math.cos((math.pi / 2) * rotation))))
-        test.append((y_cord + cord_y, x_cord + cord_x))
+        delta_y = (yeyeye * (int(math.sin((math.pi / 2) * rotation))))
+        delta_x = (yeyeye * (int(math.cos((math.pi / 2) * rotation))))
+        test.append((y_cord + delta_y, x_cord + delta_x))
     return test
 
 
@@ -154,10 +151,39 @@ def on_press(key):
 
     if key == keyboard.Key.enter:
         nr = create_ship(ship_list, nr, cords)
-
         print(nr)
     else:
         print_ship(cords, False, ship_list)
+
+def on_press_the_sequel(key):
+    global y
+    global x
+    os.system('clear' if os.name == 'posix' else 'cls')
+    y1 = y
+    x1 = x
+    if key == keyboard.Key.up and y1 != 0:
+        y1 -= 1
+    elif key == keyboard.Key.down and y1 != 9:
+        y1 += 1
+    elif key == keyboard.Key.left and x1 != 0:
+        x1 -= 1
+    elif key == keyboard.Key.right and x1 != 9:
+        x1 += 1
+    current_symbol = computer_board[y1][x1]
+    computer_board[y1][x1] = 'x'
+    y = y1
+    x = x1
+    print_board()
+    if key == keyboard.Key.enter:
+        if True:
+            make_move(x, y, computer_board, ship_list_comp)
+            print_board()
+            listener_2.stop()
+        else:
+            print("Invalid Move")
+            computer_board[y1][x1] = current_symbol
+    else:
+        computer_board[y1][x1] = current_symbol
 
 
 def print_board():
@@ -170,20 +196,25 @@ def print_board():
 def make_move(x, y, board, ship_list):
     cords = (x, y)
     if cords in get_valid_moves(board, ship_list):
+        board[y][x] = '#'
         for ship in ship_list:
-            if cords == ship.cords:
-                ship.destroy_cords(cords)
-        print()
-    for ship in ship_list_comp:
-        print(ship.cords)
+            if cords in ship.cords:
+                ship.destroy_cords(cords, board)
+                break
 
 
 def rand_computer_move():
     cords = random.choice(get_valid_moves(player_board, ship_list))
     make_move(cords[0], cords[1], player_board, ship_list)
+    os.system('clear' if os.name == 'posix' else 'cls')
+    print_board()
+
+
+
 
 
 def is_win():
+
     pass
 
 
@@ -204,7 +235,7 @@ def get_empty_squares(board, ship_list):
 
 
 listener = keyboard.Listener(on_press=on_press)
-
+listener_2 = ""
 
 def start():
     create_player_board()
@@ -212,7 +243,14 @@ def start():
     on_press(keyboard.Key.alt)
     listener.start()
     listener.join()
-
+    while True:
+        global listener_2
+        listener_2 = keyboard.Listener(on_press=on_press_the_sequel)
+        listener_2.start()
+        listener_2.join()
+        if is_win():
+            break
+        rand_computer_move()
 
 if __name__ == '__main__':
     start()
