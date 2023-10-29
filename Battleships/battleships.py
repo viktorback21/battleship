@@ -15,19 +15,31 @@ nr = 0
 
 class Ship:
     def __int__(self, cords):
+        print("SDPJDOSPJODSJPODSJPO")
         self.cords = cords
         self.destroyed = False
 
-    def check_cord(self, cord):
-        pass
+    def check_cords(self, cord):
+        for t in cord:
+            for c in self.cords:
+                if t == c:
+                    return False
+        return True
+
+    def check_one_cord(self, cord):
+        for c in self.cords:
+            if c == cord:
+                return False
+        return True
 
     def destroy_cords(self, cords):  # Tar bort kordinaterna som är förstörda och kollar om hela skeppet är förstört
         self.cords = ()
 
 
-def check_list(x_ship, y_ship, ships):
+def check_list(chosen, ships):
     for ship in ships:
-        if ship.cords == (x_ship, y_ship):
+        ship.check_cords(chosen)
+        if not ship.check_cords(chosen):
             print("INVALID MOVE")
             return False
     return True
@@ -42,7 +54,7 @@ def create_computer_board():
         valid_moves.remove(cords)
         x = cords[0]
         y = cords[1]
-        create_ship(ship_list_comp, i, x, y)
+        # create_ship(ship_list_comp, i, x, y)
         print(cords)
     print_board()
 
@@ -53,13 +65,14 @@ def create_player_board():
     return player_board
 
 
-def create_ship(lists, number, x, y, max_ships=5):
+def create_ship(lists, number, cords, max_ships=5):
     if number < max_ships:
-        if check_list(x, y, lists):
+        if check_list(cords, lists):
             ship = Ship()
-            ship.cords = (x, y)
+            ship.cords = cords
             lists.append(ship)
             number += 1
+
         if number == max_ships:
             for s in ship_list:
                 print(s.cords)
@@ -72,22 +85,27 @@ def create_ship(lists, number, x, y, max_ships=5):
 def calc_ship(y_cord, x_cord, length, rotation):
     test = []
     for yeyeye in range(length):
-        y_cord += yeyeye * (int(math.sin((math.pi / 2) * rotation)))
-        x_cord += yeyeye * (int(math.cos((math.pi / 2) * rotation)))
-        test.append((y_cord, x_cord))
+        cord_y = (yeyeye * (int(math.sin((math.pi / 2) * rotation))))
+        cord_x = (yeyeye * (int(math.cos((math.pi / 2) * rotation))))
+        test.append((y_cord + cord_y, x_cord + cord_x))
     return test
 
 
-def print_ship(cords, remove_or_print):
+def print_ship(cords, print_or_remove, test):
     for ye in cords:
-        if remove_or_print:
+        if print_or_remove:
             player_board[ye[0]][ye[1]] = 'x'
-        else:
+        elif not print_or_remove:
             player_board[ye[0]][ye[1]] = 0
+            for s in test:
+                if not s.check_one_cord(ye):
+                    player_board[ye[0]][ye[1]] = 'x'
+                    break
+
 
 
 rotation = 0
-length = 2
+length = 4
 
 
 def on_press(key):
@@ -110,17 +128,18 @@ def on_press(key):
         x1 += 1
     print(y1, x1)
     cords = calc_ship(y1, x1, length, rotation)
-    print_ship(cords, True)
-
+    print_ship(cords, True, None)
     y = y1
     x = x1
+
     print_board()
+
     if key == keyboard.Key.enter:
-        nr = create_ship(ship_list, nr, x, y)
+        nr = create_ship(ship_list, nr, cords)
 
         print(nr)
     else:
-        print_ship(cords, False)
+        print_ship(cords, False, ship_list)
 
 
 def print_board():
