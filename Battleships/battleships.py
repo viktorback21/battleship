@@ -66,11 +66,14 @@ def create_player_board():
 
 
 def create_ship(lists, number, cords, max_ships=5):
+    global length
     if number < max_ships:
         if check_list(cords, lists):
             ship = Ship()
             ship.cords = cords
             lists.append(ship)
+            if number != 2:
+                length -= 1
             number += 1
 
         if number == max_ships:
@@ -103,9 +106,18 @@ def print_ship(cords, print_or_remove, test):
                     break
 
 
+rotation = 1
+length = 5
 
-rotation = 0
-length = 4
+
+def can_rotate(y_cord, x_cord, ship_length, ship_rotation):
+    if ship_rotation == 1:
+        if x_cord+ship_length > 10:
+            return False
+    else:
+        if y_cord+ship_length > 10:
+            return False
+    return True
 
 
 def on_press(key):
@@ -120,12 +132,18 @@ def on_press(key):
     x1 = x
     if key == keyboard.Key.up and y1 != 0:
         y1 -= 1
-    elif key == keyboard.Key.down and y1 != 9:
+    elif key == keyboard.Key.down and y1 != 9 - (length - 1) * int(math.sin((math.pi / 2) * rotation)):
         y1 += 1
     elif key == keyboard.Key.left and x1 != 0:
         x1 -= 1
-    elif key == keyboard.Key.right and x1 != 9:
+    elif key == keyboard.Key.right and x1 != 9 - (length - 1) * int(math.cos((math.pi / 2) * rotation)):
         x1 += 1
+    elif key == keyboard.Key.space:
+        if can_rotate(y1,x1,length,rotation):
+            if rotation == 0:
+                rotation = 1
+            else:
+                rotation = 0
     print(y1, x1)
     cords = calc_ship(y1, x1, length, rotation)
     print_ship(cords, True, None)
