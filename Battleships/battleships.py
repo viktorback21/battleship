@@ -12,6 +12,7 @@ ship_list = []
 ship_list_comp = []
 nr = 0
 max_cords = 10
+max_ships = 5
 
 
 class Ship:
@@ -53,33 +54,57 @@ def check_list(chosen, ships):
 def create_computer_board():
     for i in range(max_cords):
         computer_board.append(['*'] * max_cords)
-    valid_moves = get_empty_squares(computer_board, ship_list_comp)
-    '''for i in range(5):
-        cords = random.choice(valid_moves)
-        computer_board[cords[1]][cords[0]] = "x"
-        valid_moves.remove(cords)
-        create_ship(ship_list_comp, i, cords)
+    i = 0
+    max_x = max_cords
+    max_y = max_cords
+    while i < max_ships:
+        #valid_moves = get_empty_squares(computer_board, ship_list_comp)
+        rot = random.randint(0, 1)
+        if rot == 1:
+            max_x = max_cords - length
+        else:
+            max_y = max_cords - length
+        print(rot)
+        cords = (random.randint(0, max_y-1), random.randint(0, max_x-1))
         print(cords)
-    '''
+        i = create_ship(ship_list_comp, i, calc_ship(cords[1], cords[0], length, rot))
+        print(calc_ship(cords[1], cords[0], length, 0))
+        print(ship_list_comp[i-1].cords)
+        max_x = max_cords
+        max_y = max_cords
+    place_ships(computer_board, ship_list_comp)
+    # computer_board[cords[1]][cords[0]] = "x"
+    # create_ship(ship_list_comp, i, cords)
 
 
+def place_ships(board, ships):
+    for ship in ships:
+        for cord in ship.cords:
+            print("DSIOIHODSIHOSd")
+            print(cord[0])
+            print(cord[1])
+            board[cord[0]][cord[1]] = 'x'
 def create_player_board():
     for i in range(max_cords):
         player_board.append([0] * max_cords)
 
 
-def create_ship(lists, number, cords, max_ships=5):
+def create_ship(lists, number, cords):
     global length
     if number < max_ships:
         if check_list(cords, lists):
             ship = Ship()
             ship.cords = cords
             lists.append(ship)
+            print("TEST: ")
+            print(lists[number].cords)
+            print()
             if number != 2:
                 length -= 1
             number += 1
 
         if number == max_ships:
+            length = 5
             for s in ship_list:
                 print(s.cords)
             listener.stop()
@@ -132,7 +157,7 @@ def on_press(key):
     global x
     global rotation
     global length
-    os.system('clear' if os.name == 'posix' else 'cls')
+    # os.system('clear' if os.name == 'posix' else 'cls')
     y1 = y
     x1 = x
     if key == keyboard.Key.up and y1 != 0:
