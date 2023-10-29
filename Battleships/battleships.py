@@ -16,8 +16,7 @@ max_ships = 5
 
 
 class Ship:
-    def __int__(self, cords):
-        self.cords = cords
+    def __init__(self):
         self.destroyed = False
 
     def check_cords(self, cord):
@@ -73,8 +72,6 @@ def create_computer_board():
         max_x = max_cords
         max_y = max_cords
     place_ships(computer_board, ship_list_comp)
-    # computer_board[cords[1]][cords[0]] = "x"
-    # create_ship(ship_list_comp, i, cords)
 
 
 def place_ships(board, ships):
@@ -96,9 +93,7 @@ def create_ship(lists, number, cords):
             ship = Ship()
             ship.cords = cords
             lists.append(ship)
-            print("TEST: ")
-            print(lists[number].cords)
-            print()
+
             if number != 2:
                 length -= 1
             number += 1
@@ -109,9 +104,6 @@ def create_ship(lists, number, cords):
                 print(s.cords)
             listener.stop()
         return number
-
-
-# https://pypi.org/project/pynput/
 
 def calc_ship(y_cord, x_cord, length, rotation):
     test = []
@@ -157,7 +149,7 @@ def on_press(key):
     global x
     global rotation
     global length
-    # os.system('clear' if os.name == 'posix' else 'cls')
+    os.system('clear' if os.name == 'posix' else 'cls')
     y1 = y
     x1 = x
     if key == keyboard.Key.up and y1 != 0:
@@ -353,6 +345,8 @@ def start():
         if is_computer_win() or is_player_win():
             break
         rand_computer_move()
+        for ship in ship_list_comp:
+            print(ship.cords)
 
 
 if __name__ == '__main__':
