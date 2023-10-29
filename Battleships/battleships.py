@@ -11,12 +11,14 @@ y = 0
 ship_list = []
 ship_list_comp = []
 nr = 0
+max_cords = 10
 
 
 class Ship:
     def __int__(self, cords):
         self.cords = cords
         self.destroyed = False
+
     def check_cords(self, cord):
         for t in cord:
             for c in self.cords:
@@ -47,20 +49,22 @@ def check_list(chosen, ships):
 
 
 def create_computer_board():
-    for i in range(10):
-        computer_board.append(['*'] * 10)
+    for i in range(max_cords):
+        computer_board.append(['*'] * max_cords)
     valid_moves = get_empty_squares(computer_board, ship_list_comp)
-    for i in range(5):
+    '''for i in range(5):
         cords = random.choice(valid_moves)
         computer_board[cords[1]][cords[0]] = "x"
         valid_moves.remove(cords)
         create_ship(ship_list_comp, i, cords)
         print(cords)
+    '''
 
 
 def create_player_board():
-    for i in range(10):
-        player_board.append([0] * 10)
+    for i in range(max_cords):
+        player_board.append([0] * max_cords)
+
 
 def create_ship(lists, number, cords, max_ships=5):
     global length
@@ -109,10 +113,12 @@ length = 5
 
 def can_rotate(y_cord, x_cord, ship_length, ship_rotation):
     if ship_rotation == 1:
-        if x_cord+ship_length > 10:
+        if x_cord + ship_length > max_cords:
+            print("CAN'T ROTATE")
             return False
     else:
-        if y_cord+ship_length > 10:
+        if y_cord + ship_length > max_cords:
+            print("CAN'T ROTATE")
             return False
     return True
 
@@ -129,14 +135,14 @@ def on_press(key):
     x1 = x
     if key == keyboard.Key.up and y1 != 0:
         y1 -= 1
-    elif key == keyboard.Key.down and y1 != 9 - (length - 1) * int(math.sin((math.pi / 2) * rotation)):
+    elif key == keyboard.Key.down and y1 != max_cords - 1 - (length - 1) * int(math.sin((math.pi / 2) * rotation)):
         y1 += 1
     elif key == keyboard.Key.left and x1 != 0:
         x1 -= 1
-    elif key == keyboard.Key.right and x1 != 9 - (length - 1) * int(math.cos((math.pi / 2) * rotation)):
+    elif key == keyboard.Key.right and x1 != max_cords - 1 - (length - 1) * int(math.cos((math.pi / 2) * rotation)):
         x1 += 1
     elif key == keyboard.Key.space:
-        if can_rotate(y1,x1,length,rotation):
+        if can_rotate(y1, x1, length, rotation):
             if rotation == 0:
                 rotation = 1
             else:
@@ -154,6 +160,7 @@ def on_press(key):
         print(nr)
     else:
         print_ship(cords, False, ship_list)
+
 
 def on_press_the_sequel(key):
     global y
@@ -188,7 +195,7 @@ def on_press_the_sequel(key):
 
 def print_board():
     print("        Your board                                                       Enemy board")
-    for i in range(10):
+    for i in range(max_cords):
         print(*player_board[i], sep="  ", end='                                    ')
         print(*computer_board[i], sep="  ")
 
@@ -210,11 +217,7 @@ def rand_computer_move():
     print_board()
 
 
-
-
-
 def is_win():
-
     pass
 
 
@@ -237,6 +240,7 @@ def get_empty_squares(board, ship_list):
 listener = keyboard.Listener(on_press=on_press)
 listener_2 = ""
 
+
 def start():
     create_player_board()
     create_computer_board()
@@ -251,6 +255,7 @@ def start():
         if is_win():
             break
         rand_computer_move()
+
 
 if __name__ == '__main__':
     start()
