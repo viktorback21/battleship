@@ -1,6 +1,8 @@
-import random
-from pynput import keyboard
+import math
 import os
+import random
+
+from pynput import keyboard
 
 player_board = []
 computer_board = []
@@ -15,8 +17,13 @@ class Ship:
     def __int__(self, cords):
         self.cords = cords
         self.destroyed = False
-    def destroy_cords(self, cords): # Tar bort kordinaterna som är förstörda och kollar om hela skeppet är förstört
+
+    def check_cord(self, cord):
+        pass
+
+    def destroy_cords(self, cords):  # Tar bort kordinaterna som är förstörda och kollar om hela skeppet är förstört
         self.cords = ()
+
 
 def check_list(x_ship, y_ship, ships):
     for ship in ships:
@@ -46,14 +53,14 @@ def create_player_board():
     return player_board
 
 
-def create_ship(lists, number, x, y):
-    if number < 5:
+def create_ship(lists, number, x, y, max_ships=5):
+    if number < max_ships:
         if check_list(x, y, lists):
             ship = Ship()
             ship.cords = (x, y)
             lists.append(ship)
             number += 1
-        if number == 5:
+        if number == max_ships:
             for s in ship_list:
                 print(s.cords)
             listener.stop()
@@ -61,11 +68,35 @@ def create_ship(lists, number, x, y):
 
 
 # https://pypi.org/project/pynput/
+
+def calc_ship(y_cord, x_cord, length, rotation):
+    test = []
+    for yeyeye in range(length):
+        y_cord += yeyeye * (int(math.sin((math.pi / 2) * rotation)))
+        x_cord += yeyeye * (int(math.cos((math.pi / 2) * rotation)))
+        test.append((y_cord, x_cord))
+    return test
+
+
+def print_ship(cords, remove_or_print):
+    for ye in cords:
+        if remove_or_print:
+            player_board[ye[0]][ye[1]] = 'x'
+        else:
+            player_board[ye[0]][ye[1]] = 0
+
+
+rotation = 0
+length = 2
+
+
 def on_press(key):
     global nr
     global ship_list
     global y
     global x
+    global rotation
+    global length
     os.system('clear' if os.name == 'posix' else 'cls')
     y1 = y
     x1 = x
@@ -78,15 +109,18 @@ def on_press(key):
     elif key == keyboard.Key.right and x1 != 9:
         x1 += 1
     print(y1, x1)
-    player_board[y1][x1] = 'x'
+    cords = calc_ship(y1, x1, length, rotation)
+    print_ship(cords, True)
+
     y = y1
     x = x1
     print_board()
     if key == keyboard.Key.enter:
         nr = create_ship(ship_list, nr, x, y)
+
         print(nr)
     else:
-        player_board[y1][x1] = 0
+        print_ship(cords, False)
 
 
 def print_board():
@@ -106,6 +140,7 @@ def make_move(x, y, board, ship_list):
     for ship in ship_list_comp:
         print(ship.cords)
 
+
 def rand_computer_move():
     cords = random.choice(get_valid_moves(player_board, ship_list))
     make_move(cords[0], cords[1], player_board, ship_list)
@@ -114,11 +149,13 @@ def rand_computer_move():
 def is_win():
     pass
 
+
 def get_valid_moves(board, ship_list):
     valid_moves = get_empty_squares(board, ship_list)
     for ship in ship_list:
         valid_moves.append(ship.cords)
     return valid_moves
+
 
 def get_empty_squares(board, ship_list):
     empty_squares = []
@@ -138,6 +175,7 @@ def start():
     on_press(keyboard.Key.alt)
     listener.start()
     listener.join()
+
 
 if __name__ == '__main__':
     start()
