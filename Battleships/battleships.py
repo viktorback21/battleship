@@ -1,7 +1,6 @@
 import math
 import os
 import random
-import time
 
 from pynput import keyboard
 
@@ -105,9 +104,9 @@ def create_ship(lists, number, cords):
 
 def calc_ship(y_cord, x_cord, length, rotation):
     test = []
-    for yeyeye in range(length):
-        delta_y = (yeyeye * (int(math.sin((math.pi / 2) * rotation))))
-        delta_x = (yeyeye * (int(math.cos((math.pi / 2) * rotation))))
+    for current_length in range(length):
+        delta_y = (current_length * (int(math.sin((math.pi / 2) * rotation))))
+        delta_x = (current_length * (int(math.cos((math.pi / 2) * rotation))))
         test.append((y_cord + delta_y, x_cord + delta_x))
     return test
 
